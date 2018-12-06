@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npx webpack-dev-server --open",
-    "build": "npx webpack src/index.js -o dist/bundle.js"
+    "build": "npx webpack"
   },
   "author": "",
   "license": "ISC",

@@ -1,8 +1,8 @@
 body {
   font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
-  color: #333;
-  background-color: darkgray;
-  min-width: 710px;
+  color: #000000;
+  background-color: #9b9075;
+  min-width: 510px;
   font-size: 18px;
 }
 
@@ -13,24 +13,18 @@ body {
 
 .container {
   position: relative;
-  width: 100%;
-  margin: 0 auto;
-  padding-top: 50px;
-}
-
-.mid-container {
-  position: relative;
   width: 500px;
   height: 700px;
-  margin: auto;
-  background-color: aliceblue;
+  margin: 50px auto;
+  background-color: #ecf1f7;
   padding-top: 5px;
+  border: 1px solid #d6d5d5;
 }
 
 .title {
   width: 97%;
   height: 50px;
-  border: 1px solid gray;
+  border: 1px solid #d6d5d5;
   background-color: white;
   margin: 5px;
   display: table;
@@ -44,25 +38,24 @@ body {
 }
 
 .title .name {
-  width: 90%;
+  width: 85%;
 }
 
 .title .time {
-  text-align: right;
+  text-align: center;
 }
 
 .bar {
   width: 97%;
   height: 10px;
   margin: 0 5px;
-  background-color: #f3f5f6;
-  border: 1px solid gray;
+  background-color: #d6d5d5;
 }
 
 .bar .pb {
   width: 0;
   height: 10px;
-  background-color: red;
+  background-color: #f1544d;
 }
 
 button {
@@ -83,8 +76,9 @@ button {
 
 .buttons button {}
 
-.buttons button:hover {
-  background-color: #eee;
+.buttons button:hover, .buttons button.on {
+  background-color: #f1544d;
+  color: white;
 }
 
 .playlist {}
@@ -95,7 +89,7 @@ button {
 }
 
 .playlist button {
-  background-color: #cfd6d9;
+  background-color: #e8e8e8;
 }
 
 .playlist .list button {
@@ -104,10 +98,63 @@ button {
   height: 50px;
 }
 
-.playlist .list button:hover {
-  background-color: red;
+.playlist .list button:hover, .playlist .list button.on, .playlist .op button:hover {
+  background-color: #f1544d;
+  color: white;
 }
 
-.playlist .list button.on {
-  background-color: red;
+.listbuttons {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.listbuttons button{
+  width: auto;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 3px;
+  padding-top: 3px;
+}
+
+.musiclist {
+  width: 97%;
+  height: 455px;
+  border: 1px solid #d6d5d5;
+  background-color: white;
+  margin: 5px;
+  font-size: 16px;
+  overflow-y: scroll;
+}
+.musiclist li {
+  width: 99%;
+  height: 40px;
+  display: table;
+  border: 1px solid white;
+}
+.musiclist li.on {
+  border: 1px solid #f1544d;
+}
+.musiclist li span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.musiclist li .cb {
+  width: 10%;
+  text-align: center;
+}
+.musiclist li .cb input{
+  cursor: pointer;
+}
+.musiclist li .name {
+  width: 75%;
+  cursor: pointer;
+}
+
+.musiclist li .time {
+  width: 15%;
+  text-align: center;
 }

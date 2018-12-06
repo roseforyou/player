@@ -1,0 +1,113 @@
+body {
+  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  color: #333;
+  background-color: darkgray;
+  min-width: 710px;
+  font-size: 18px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 50px;
+}
+
+.mid-container {
+  position: relative;
+  width: 500px;
+  height: 700px;
+  margin: auto;
+  background-color: aliceblue;
+  padding-top: 5px;
+}
+
+.title {
+  width: 97%;
+  height: 50px;
+  border: 1px solid gray;
+  background-color: white;
+  margin: 5px;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+
+.title span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.title .name {
+  width: 90%;
+}
+
+.title .time {
+  text-align: right;
+}
+
+.bar {
+  width: 97%;
+  height: 10px;
+  margin: 0 5px;
+  background-color: #f3f5f6;
+  border: 1px solid gray;
+}
+
+.bar .pb {
+  width: 0;
+  height: 10px;
+  background-color: red;
+}
+
+button {
+  width: 50px;
+  height: 30px;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+  border: none;
+  cursor: pointer;
+  outline: 0;
+}
+
+.buttons {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.buttons button {}
+
+.buttons button:hover {
+  background-color: #eee;
+}
+
+.playlist {}
+
+.playlist .list {
+  width: 90%;
+  display: table-cell;
+}
+
+.playlist button {
+  background-color: #cfd6d9;
+}
+
+.playlist .list button {
+  border-radius: 0;
+  width: 100px;
+  height: 50px;
+}
+
+.playlist .list button:hover {
+  background-color: red;
+}
+
+.playlist .list button.on {
+  background-color: red;
+}

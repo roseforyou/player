@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx webpack-dev-server --open",
+    "test": "npm i && npx webpack-dev-server --open",
+    "start": "npm i && npx webpack-dev-server --open",
     "build": "npx webpack"
   },
   "author": "",

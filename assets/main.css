@@ -56,6 +56,7 @@ body {
   width: 0;
   height: 10px;
   background-color: #f1544d;
+  transition: 0.9s width;
 }
 
 button {
@@ -74,7 +75,9 @@ button {
   text-align: center;
 }
 
-.buttons button {}
+.buttons button {
+  margin: 0 2px;
+}
 
 .buttons button:hover, .buttons button.on {
   background-color: #f1544d;
@@ -133,6 +136,9 @@ ul {
   height: 40px;
   display: table;
   border: 1px solid white;
+}
+.musiclist li:hover {
+  border: 1px solid #f1544d;
 }
 .musiclist li.on {
   border: 1px solid #f1544d;

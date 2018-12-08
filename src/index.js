@@ -15,7 +15,7 @@ document.querySelector('.container').prepend(title.getEl());
 let ul = document.createElement('ul');
 let songs = [];
 let currentID = -1;
-let clickSong = function(id, name, length) {
+let playSong = function(id, name, length) {
   let s = songs.find(data=>{return data.playing});
   if(s) {
     s.setStop();
@@ -31,7 +31,7 @@ let clickSong = function(id, name, length) {
   bar.play();
 }
 shuffleArray(AUDIOS).map(data => {
-  let song = new Song(data.id, data.name, data.length, clickSong);
+  let song = new Song(data.id, data.name, data.length, playSong);
   songs.push(song);
   ul.appendChild(song.getEl());
 });

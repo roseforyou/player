@@ -60,7 +60,7 @@ body {
 }
 
 button {
-  width: 50px;
+  width: 56px;
   height: 30px;
   border-radius: 5px;
   background-color: white;
@@ -79,16 +79,33 @@ button {
   margin: 0 2px;
 }
 
-.buttons button:hover, .buttons button.on {
+.buttons button:hover,
+.buttons button.on {
   background-color: #f1544d;
   color: white;
 }
 
-.playlist {}
+.playlist {
+  position: relative;
+  width: 97%;
+  height: 56px;
+  border: 1px solid #d6d5d5;
+  background-color: white;
+  margin: 5px;
+}
 
 .playlist .list {
-  width: 90%;
-  display: table-cell;
+  width: 86%;
+  height: 50px;
+  margin: 3px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.playlist .op {
+  position: absolute;
+  top: 13px;
+  right: 5px;
 }
 
 .playlist button {
@@ -96,12 +113,18 @@ button {
 }
 
 .playlist .list button {
-  border-radius: 0;
-  width: 100px;
+  width: 92px;
   height: 50px;
+  border-radius: 0;
+  margin: 0 2px; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.playlist .list button:hover, .playlist .list button.on, .playlist .op button:hover {
+.playlist .list button:hover,
+.playlist .list button.on,
+.playlist .op button:hover {
   background-color: #f1544d;
   color: white;
 }
@@ -111,7 +134,7 @@ button {
   padding-left: 10px;
 }
 
-.listbuttons button{
+.listbuttons button {
   width: auto;
 }
 
@@ -131,30 +154,41 @@ ul {
   font-size: 16px;
   overflow-y: scroll;
 }
+
 .musiclist li {
   width: 99%;
   height: 40px;
   display: table;
   border: 1px solid white;
 }
+
 .musiclist li:hover {
   border: 1px solid #f1544d;
 }
+
 .musiclist li.on {
   border: 1px solid #f1544d;
 }
+
+.musiclist li.playing {
+  background-color: bisque;
+}
+
 .musiclist li span {
   display: table-cell;
   vertical-align: middle;
+  user-select: none;
 }
 
 .musiclist li .cb {
   width: 10%;
   text-align: center;
 }
-.musiclist li .cb input{
+
+.musiclist li .cb input {
   cursor: pointer;
 }
+
 .musiclist li .name {
   width: 75%;
   cursor: pointer;

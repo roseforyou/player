@@ -10,26 +10,48 @@ function addZero(str) {
 }
 
 class Song {
-  constructor(id, name, length, songClicked) {
+  constructor(id, name, length, playSong) {
     let that = this;
 
     this.id = id;
     this.name = name;
     this.length = length;
     this.playing = false;
-    this.songClicked = songClicked;
+    this.selected = false;
+    this.playSong = playSong;
 
     this.li = createEl("li");
     this.cb = createEl('input', [], 'checkbox');
+    this.cb.onclick = function () {
+      if (that.selected) {
+        that.selected = false;
+        that.li.classList.remove('on');
+      } else {
+        that.selected = true;
+        that.li.classList.add('on');
+      }
+    };
     this.span1 = createEl("span", ['cb']);
     this.span1.appendChild(this.cb);
 
     this.span2 = createEl("span", ['name']);
     this.span2.innerHTML = this.name;
     this.span2.onclick = function () {
-      if (that.playing) return;
-      that.songClicked(that.id, that.name, that.length);
+      if (that.selected) {
+        that.selected = false;
+        that.cb.checked = false;
+        that.li.classList.remove('on');
+      } else {
+        that.selected = true;
+        that.cb.checked = true;
+        that.li.classList.add('on');
+      }
     };
+
+    this.span2.ondblclick = function () {
+      if (that.playing) return;
+      that.playSong(that.id, that.name, that.length);
+    }
 
     this.span3 = createEl("span", ['time']);
     this.span3.innerHTML = this.formatTime(this.length);
@@ -46,13 +68,13 @@ class Song {
 
   setPlay() {
     if (this.playing) return;
-    this.li.classList.add('on');
+    this.li.classList.add('playing');
     this.playing = true;
   }
 
   setStop() {
     if (!this.playing) return;
-    this.li.classList.remove('on');
+    this.li.classList.remove('playing');
     this.playing = false;
   }
 
@@ -144,7 +166,7 @@ class Bar {
   }
 
   formatLength() {
-    this.divInner.style.width = 100*this.length/this.initLen+'%';
+    this.divInner.style.width = 100 * this.length / this.initLen + '%';
   }
 
   setLength(length) {
@@ -186,25 +208,25 @@ class PlayButtons {
 
     this.prevDiv = createEl('button');
     this.prevDiv.innerHTML = 'Prev';
-    this.prevDiv.onclick = function(){
+    this.prevDiv.onclick = function () {
       that.prev();
     }
 
     this.playDiv = createEl('button');
     this.playDiv.innerHTML = 'Play';
-    this.playDiv.onclick = function(){
+    this.playDiv.onclick = function () {
       that.play();
     }
 
     this.stopDiv = createEl('button');
     this.stopDiv.innerHTML = 'Stop';
-    this.stopDiv.onclick = function(){
+    this.stopDiv.onclick = function () {
       that.stop();
     }
 
     this.nextDiv = createEl('button');
     this.nextDiv.innerHTML = 'Next';
-    this.nextDiv.onclick = function(){
+    this.nextDiv.onclick = function () {
       that.next();
     }
 
@@ -234,4 +256,9 @@ class PlayButtons {
   }
 }
 
-export { Title, Song, Bar, PlayButtons};
+export {
+  Title,
+  Song,
+  Bar,
+  PlayButtons
+};

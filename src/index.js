@@ -1,38 +1,39 @@
-import { AUDIOS } from './data.js';
-import { shuffleArray } from './method.js';
-import { Title, Song, Bar, PlayButtons } from './class.js';
+import { AUDIOS } from "./data.js";
+import { shuffleArray } from "./method.js";
+import { Title, Song, Bar, PlayButtons, PlayArea } from "./class.js";
 
+const playButtons = new PlayButtons();
+document.querySelector(".container").prepend(playButtons.getEl());
 
-let playButtons = new PlayButtons();
-document.querySelector('.container').prepend(playButtons.getEl());
+const bar = new Bar();
+document.querySelector(".container").prepend(bar.getEl());
 
-let bar = new Bar();
-document.querySelector('.container').prepend(bar.getEl());
+const title = new Title();
+document.querySelector(".container").prepend(title.getEl());
 
-let title = new Title();
-document.querySelector('.container').prepend(title.getEl());
-
-let ul = document.createElement('ul');
-let songs = [];
-let currentID = -1;
-let playSong = function(id, name, length) {
-  let s = songs.find(data=>{return data.playing});
-  if(s) {
-    s.setStop();
-
-  }
-  songs.find(data=>{return data.id === id}).setPlay();
-
+///////////////////////////////
+const playSong = function(id, name, length) {
   title.setName(name);
   title.setLength(length);
   title.play();
 
   bar.setLength(length);
   bar.play();
-}
-shuffleArray(AUDIOS).map(data => {
-  let song = new Song(data.id, data.name, data.length, playSong);
-  songs.push(song);
-  ul.appendChild(song.getEl());
-});
-document.querySelector('.musiclist').appendChild(ul);
+};
+
+const stopSong = function() {
+  title.setName("");
+  title.setLength(0);
+  title.stop();
+
+  bar.stop();
+};
+
+const pauseSong = function() {
+  title.pause();
+  bar.pause();
+};
+
+window.playArea = new PlayArea(AUDIOS, playSong, pauseSong, stopSong);
+document.querySelector(".musiclist").appendChild(playArea.getEl());
+playArea.show();

@@ -1,5 +1,6 @@
 body {
-  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei",
+    "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
   color: #000000;
   background-color: #9b9075;
   min-width: 510px;
@@ -9,6 +10,10 @@ body {
 body {
   margin: 0;
   padding: 0;
+}
+
+.hide {
+  display: none;
 }
 
 .container {
@@ -116,7 +121,7 @@ button {
   width: 92px;
   height: 50px;
   border-radius: 0;
-  margin: 0 2px; 
+  margin: 0 2px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -139,20 +144,24 @@ button {
 }
 
 ul {
-  list-style: none;
+  height: 455px;
   margin: 0;
+  border: 1px solid #d6d5d5;
+  background-color: white;
+  list-style: none;
   padding-left: 3px;
   padding-top: 3px;
+  overflow-y: scroll;
 }
 
 .musiclist {
   width: 97%;
-  height: 455px;
+  /* height: 455px;
   border: 1px solid #d6d5d5;
-  background-color: white;
+  background-color: white; */
   margin: 5px;
   font-size: 16px;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 .musiclist li {

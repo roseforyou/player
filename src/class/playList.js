@@ -368,7 +368,6 @@ class PlayList {
 class PlayArea {
   constructor(AUDIOS, isDefault) {
     this.playAreaDiv = createEl("div");
-    this.hide();
     this.btnsDIV = createEl("div", ["buttons", "listbuttons"]);
     if (isDefault) {
       this.playAreaDiv.classList.add("default");
@@ -406,6 +405,7 @@ class PlayArea {
     this.playList = new PlayList(AUDIOS);
     // window.playList = this.playList;
     this.playAreaDiv.appendChild(this.playList.getEl());
+    this.hide();
   }
 
   show() {

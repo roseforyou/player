@@ -83,7 +83,7 @@ window.pauseSong = function() {
   playButtons.setPlayStatus("pause");
 };
 
-window.PLAYAREA.default = new PlayArea(AUDIOS, true);
+window.PLAYAREA["default"] = new PlayArea(AUDIOS, true);
 document
   .querySelector(".musiclist")
   .appendChild(window.PLAYAREA.default.getEl());

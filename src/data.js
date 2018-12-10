@@ -20,8 +20,7 @@ const AUDIOS = [
   { "id": 19, "name": "Kelly Clarkson", "length": 55 },
   { "id": 20, "name": "I Need (Wilkinson & Metrik Remix)", "length": 32 }
 ];
-export { AUDIOS };
-
+export default AUDIOS;
 
 
 

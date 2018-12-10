@@ -1,20 +1,13 @@
-function createEl(label, cls, type) {
-  let el = document.createElement(label);
-  if (cls && cls.length) el.classList.add(...cls);
-  if (type) el.type = type;
-  return el;
-}
+import { createEl, addZero } from "../method";
 
-function addZero(str) {
-  return str >= 10 ? str : "0" + str;
-}
-
+// song obj
 class Song {
   constructor(id, name, length, playListObj) {
     Object.assign(this, { id, name, length, playListObj });
 
-    this.playing = false;
     this.selected = false;
+
+    this.status = 'ready';// ready playing pause stop
 
     this.li = createEl("li");
     this.cb = createEl("input", [], "checkbox");
@@ -46,7 +39,7 @@ class Song {
     });
 
     this.span2.addEventListener("dblclick", () => {
-      if (this.playing) return;
+      if ( this.status === 'playing') return;
       this.playListObj.playSong(this.id, this.name, this.length);
       if (!this.selected) {
         this.selected = true;
@@ -68,15 +61,26 @@ class Song {
   }
 
   setPlay() {
-    if (this.playing) return;
+    if (this.status === 'playing') {
+      this.setPause();
+      return;
+    }
     this.li.classList.add("playing");
-    this.playing = true;
+    this.status = 'playing';
   }
 
   setStop() {
-    if (!this.playing) return;
+    if (this.status === 'stop') return;
     this.li.classList.remove("playing");
-    this.playing = false;
+    this.status = 'stop';
+  }
+
+  setPause() {
+    if (this.status === 'pause') {
+      this.setPlay();
+      return;
+    }
+    this.status = 'pause';
   }
 
   getEl() {
@@ -100,7 +104,7 @@ class PlayList {
 
   playSong(id, name, length) {
     const s = this.songsObjList.find(data => {
-      return data.playing;
+      return data.status === 'playing';
     });
     if (s) {
       s.setStop();
@@ -230,7 +234,7 @@ class PlayList {
           data.remove();
         });
         this.songsObjList = this.songsObjList.filter(data => {
-          if (data.playing) {
+          if (data.status === 'playing') {
             this.emitStop();
             data.setStop();
           }
@@ -238,6 +242,86 @@ class PlayList {
         });
       }
     }
+  }
+
+  play() {
+
+    if (this.songsObjList.find(data=>{return data.status==='playing'})) return;
+
+    const pauseSong = this.songsObjList.find(data=>{
+      return data.status === 'pause';
+    });
+    if (pauseSong) {
+      pauseSong.setPlay();
+      this.emitPlay();
+      return;
+    }
+
+    const firstCheckedSong = this.songsObjList.find(data=>{
+      return data.selected === true;
+    });
+
+    if (firstCheckedSong) {
+      firstCheckedSong.setPlay();
+      let {id, name, length} = firstCheckedSong;
+      this.emitPlay(id, name, length);
+    } else {
+      this.songsObjList[0].setPlay();
+      let {id, name, length} = this.songsObjList[0];
+      this.emitPlay(id, name, length);
+    }
+
+  }
+  pause() {
+    const song = this.songsObjList.find(data=>{return data.status==='playing'});
+    if (typeof song === 'undefined') return;
+    song.setPause();
+    this.emitPause();
+  }
+  stop() {
+    const song = this.songsObjList.find(data=>{return data.status==='playing' || data.status==='pause'});
+    song.setStop();
+    this.emitStop();
+  }
+  prev() {
+    const idx = this.songsObjList.findIndex(data=>{return data.status==='playing' || data.status==='pause'});
+    let prevIdx = 0;
+    if (idx>-1) {
+      this.songsObjList[idx].setStop();
+      this.emitStop();
+
+      if (idx === 0) {
+        prevIdx = this.songsObjList.length-1;
+      } else {
+        prevIdx = idx - 1;
+      }
+    } else {
+      prevIdx = this.songsObjList.length-1;
+    }
+
+    this.songsObjList[prevIdx].setPlay();
+    let {id, name, length} = this.songsObjList[prevIdx];
+    this.emitPlay(id, name, length);
+  }
+  next() {
+    const idx = this.songsObjList.findIndex(data=>{return data.status==='playing' || data.status==='pause'});
+    let nextIdx = 0;
+    if (idx>-1) {
+      this.songsObjList[idx].setStop();
+      this.emitStop();
+
+      if (idx === this.songsObjList.length-1) {
+        nextIdx = 0;
+      } else {
+        nextIdx = idx + 1;
+      }
+    } else {
+      nextIdx = 0;
+    }
+
+    this.songsObjList[nextIdx].setPlay();
+    let {id, name, length} = this.songsObjList[nextIdx];
+    this.emitPlay(id, name, length);
   }
 
   getEl() {
@@ -276,6 +360,7 @@ class PlayArea {
     this.playAreaDiv.appendChild(this.btnsDIV);
 
     this.playList = new PlayList(AUDIOS, playSong, pauseSong, stopSong);
+    window.playList = this.playList;
     this.playAreaDiv.appendChild(this.playList.getEl());
   }
 
@@ -292,187 +377,4 @@ class PlayArea {
   }
 }
 
-class Title {
-  constructor(name, length) {
-    this.name = name || "";
-    this.initLen = length || 0;
-    this.length = length || 0;
-
-    this.span1 = createEl("span", ["name"]);
-    this.span1.innerHTML = "Welcome to play music!";
-    this.span2 = createEl("span", ["time"]);
-    this.span2.innerHTML = "";
-    this.div = createEl("div", ["title"]);
-    this.div.append(this.span1, this.span2);
-
-    this.si = 0;
-  }
-
-  formatTime(length) {
-    return "-" + addZero(Math.floor(length / 60)) + ":" + addZero(length % 60);
-  }
-
-  setTime() {
-    this.span2.innerHTML = this.formatTime(this.length);
-  }
-  setName(name) {
-    this.span1.innerHTML = name;
-  }
-
-  setLength(length) {
-    this.length = length;
-    this.initLen = length;
-    this.setTime();
-  }
-
-  play() {
-    clearInterval(this.si);
-    this.si = setInterval(
-      function(ct) {
-        if (ct.length === 0) {
-          clearInterval(ct.si);
-          ct.length = ct.initLen;
-          // playlist next song
-          return;
-        }
-        ct.length--;
-        ct.setTime();
-      },
-      1000,
-      this
-    );
-  }
-
-  pause() {
-    clearInterval(this.si);
-  }
-
-  stop() {
-    clearInterval(this.si);
-    this.length = this.initLen;
-  }
-
-  getEl() {
-    return this.div;
-  }
-}
-
-class Bar {
-  constructor() {
-    this.div = createEl("div", ["bar"]);
-    this.divInner = createEl("div", ["pb"]);
-    this.div.append(this.divInner);
-
-    this.si = 0;
-  }
-
-  getEl() {
-    return this.div;
-  }
-
-  init() {
-    this.initLength = 0;
-    this.length = 0;
-    this.divInner.style.width = 0;
-  }
-
-  formatLength() {
-    this.divInner.style.width = (100 * this.length) / this.initLen + "%";
-  }
-
-  setLength(length) {
-    this.length = length;
-    this.initLen = length;
-    this.divInner.style.width = "100%";
-  }
-
-  play() {
-    clearInterval(this.si);
-    this.si = setInterval(
-      function(ct) {
-        if (ct.length === 0) {
-          clearInterval(ct.si);
-          // playlist next song
-          return;
-        }
-        ct.length--;
-        ct.formatLength();
-      },
-      1000,
-      this
-    );
-  }
-
-  pause() {
-    clearInterval(this.si);
-  }
-
-  stop() {
-    clearInterval(this.si);
-    this.init();
-  }
-}
-
-class PlayButtons {
-  constructor(prev, play, stop, next) {
-    this.prev = prev;
-    this.play = play;
-    this.stop = stop;
-    this.next = next;
-
-    this.prevDiv = createEl("button");
-    this.prevDiv.innerHTML = "Prev";
-    this.prevDiv.addEventListener("click", () => {
-      this.prev();
-    });
-
-    this.playDiv = createEl("button");
-    this.playDiv.innerHTML = "Play";
-    this.playDiv.addEventListener("click", () => {
-      this.play();
-    });
-
-    this.stopDiv = createEl("button");
-    this.stopDiv.innerHTML = "Stop";
-    this.stopDiv.addEventListener("click", () => {
-      this.stop();
-    });
-
-    this.nextDiv = createEl("button");
-    this.nextDiv.innerHTML = "Next";
-    this.nextDiv.addEventListener("click", () => {
-      this.next();
-    });
-
-    this.buttonsDiv = createEl("div", ["buttons"]);
-    this.buttonsDiv.append(
-      this.prevDiv,
-      this.playDiv,
-      this.stopDiv,
-      this.nextDiv
-    );
-
-    this.playing = false;
-  }
-
-  setPlayTxt() {
-    if (this.playing) {
-      this.playDiv.innerHTML = "Pause";
-      this.playDiv.classList.add("on");
-    } else {
-      this.playDiv.innerHTML = "Play";
-      this.playDiv.classList.remove("on");
-    }
-  }
-
-  setPlayStatus(status) {
-    this.playing = status;
-    this.setPlayTxt();
-  }
-
-  getEl() {
-    return this.buttonsDiv;
-  }
-}
-
-export { Title, Song, Bar, PlayButtons, PlayList, PlayArea };
+export default PlayArea;

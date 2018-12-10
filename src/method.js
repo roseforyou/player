@@ -9,4 +9,15 @@ function shuffleArray(array) {
   return newArrr;
 }
 
-export {shuffleArray};
+function createEl(label, cls, type) {
+  let el = document.createElement(label);
+  if (cls && cls.length) el.classList.add(...cls);
+  if (type) el.type = type;
+  return el;
+}
+
+function addZero(str) {
+  return str >= 10 ? str : "0" + str;
+}
+
+export {shuffleArray, createEl, addZero};

@@ -7,7 +7,7 @@ class Song {
 
     this.selected = false;
 
-    this.status = 'ready';// ready playing pause stop
+    this.status = "ready"; // ready playing pause stop
 
     this.li = createEl("li");
     this.cb = createEl("input", [], "checkbox");
@@ -39,7 +39,7 @@ class Song {
     });
 
     this.span2.addEventListener("dblclick", () => {
-      if ( this.status === 'playing') return;
+      if (this.status === "playing") return;
       this.playListObj.playSong(this.id, this.name, this.length);
       if (!this.selected) {
         this.selected = true;
@@ -61,26 +61,26 @@ class Song {
   }
 
   setPlay() {
-    if (this.status === 'playing') {
+    if (this.status === "playing") {
       this.setPause();
       return;
     }
     this.li.classList.add("playing");
-    this.status = 'playing';
+    this.status = "playing";
   }
 
   setStop() {
-    if (this.status === 'stop') return;
+    if (this.status === "stop") return;
     this.li.classList.remove("playing");
-    this.status = 'stop';
+    this.status = "stop";
   }
 
   setPause() {
-    if (this.status === 'pause') {
+    if (this.status === "pause") {
       this.setPlay();
       return;
     }
-    this.status = 'pause';
+    this.status = "pause";
   }
 
   getEl() {
@@ -89,9 +89,9 @@ class Song {
 }
 
 class PlayList {
-  constructor(songsList, emitPlay, emitPause, emitStop) {
+  constructor(songsList) {
     const sl = JSON.parse(JSON.stringify(songsList));
-    Object.assign(this, { sl, emitPlay, emitPause, emitStop });
+    Object.assign(this, { sl });
 
     this.ul = createEl("ul");
 
@@ -104,7 +104,7 @@ class PlayList {
 
   playSong(id, name, length) {
     const s = this.songsObjList.find(data => {
-      return data.status === 'playing';
+      return data.status === "playing";
     });
     if (s) {
       s.setStop();
@@ -114,7 +114,7 @@ class PlayList {
         return data.id === id;
       })
       .setPlay();
-    this.emitPlay(id, name, length);
+    window.playSong(id, name, length);
   }
 
   moveChildNode(newChildIdx, oldChildIdx) {
@@ -227,15 +227,15 @@ class PlayList {
         return data.selected === true;
       }) === "undefined"
     ) {
-      alert("Please select which you want to delete !");
+      alert("Please select which you want to delete!");
     } else {
-      if (confirm("Are you sure delete the seleced song ?!")) {
+      if (confirm("Are you sure delete the seleced song?!")) {
         this.ul.querySelectorAll(".on").forEach(data => {
           data.remove();
         });
         this.songsObjList = this.songsObjList.filter(data => {
-          if (data.status === 'playing') {
-            this.emitStop();
+          if (data.status === "playing") {
+            window.stopSong();
             data.setStop();
           }
           return data.selected === false;
@@ -245,72 +245,83 @@ class PlayList {
   }
 
   play() {
+    if (
+      this.songsObjList.find(data => {
+        return data.status === "playing";
+      })
+    )
+      return;
 
-    if (this.songsObjList.find(data=>{return data.status==='playing'})) return;
-
-    const pauseSong = this.songsObjList.find(data=>{
-      return data.status === 'pause';
+    const pauseSong = this.songsObjList.find(data => {
+      return data.status === "pause";
     });
     if (pauseSong) {
       pauseSong.setPlay();
-      this.emitPlay();
+      window.playSong();
       return;
     }
 
-    const firstCheckedSong = this.songsObjList.find(data=>{
+    const firstCheckedSong = this.songsObjList.find(data => {
       return data.selected === true;
     });
 
     if (firstCheckedSong) {
       firstCheckedSong.setPlay();
-      let {id, name, length} = firstCheckedSong;
-      this.emitPlay(id, name, length);
+      let { id, name, length } = firstCheckedSong;
+      window.playSong(id, name, length);
     } else {
       this.songsObjList[0].setPlay();
-      let {id, name, length} = this.songsObjList[0];
-      this.emitPlay(id, name, length);
+      let { id, name, length } = this.songsObjList[0];
+      window.playSong(id, name, length);
     }
-
   }
   pause() {
-    const song = this.songsObjList.find(data=>{return data.status==='playing'});
-    if (typeof song === 'undefined') return;
+    const song = this.songsObjList.find(data => {
+      return data.status === "playing";
+    });
+    if (typeof song === "undefined") return;
     song.setPause();
-    this.emitPause();
+    window.pauseSong();
   }
   stop() {
-    const song = this.songsObjList.find(data=>{return data.status==='playing' || data.status==='pause'});
+    const song = this.songsObjList.find(data => {
+      return data.status === "playing" || data.status === "pause";
+    });
     song.setStop();
-    this.emitStop();
+    window.stopSong();
   }
   prev() {
-    const idx = this.songsObjList.findIndex(data=>{return data.status==='playing' || data.status==='pause'});
+    const idx = this.songsObjList.findIndex(data => {
+      return data.status === "playing" || data.status === "pause";
+    });
     let prevIdx = 0;
-    if (idx>-1) {
+    if (idx > -1) {
       this.songsObjList[idx].setStop();
-      this.emitStop();
+      window.stopSong();
 
       if (idx === 0) {
-        prevIdx = this.songsObjList.length-1;
+        prevIdx = this.songsObjList.length - 1;
       } else {
         prevIdx = idx - 1;
       }
     } else {
-      prevIdx = this.songsObjList.length-1;
+      prevIdx = this.songsObjList.length - 1;
     }
 
     this.songsObjList[prevIdx].setPlay();
-    let {id, name, length} = this.songsObjList[prevIdx];
-    this.emitPlay(id, name, length);
+    let { id, name, length } = this.songsObjList[prevIdx];
+    window.playSong(id, name, length);
   }
   next() {
-    const idx = this.songsObjList.findIndex(data=>{return data.status==='playing' || data.status==='pause'});
+    const idx = this.songsObjList.findIndex(data => {
+      return data.status === "playing" || data.status === "pause";
+    });
     let nextIdx = 0;
-    if (idx>-1) {
+    if (idx > -1) {
       this.songsObjList[idx].setStop();
-      this.emitStop();
+      window.stopSong();
 
-      if (idx === this.songsObjList.length-1) {
+      if (idx === this.songsObjList.length - 1) {
         nextIdx = 0;
       } else {
         nextIdx = idx + 1;
@@ -320,8 +331,33 @@ class PlayList {
     }
 
     this.songsObjList[nextIdx].setPlay();
-    let {id, name, length} = this.songsObjList[nextIdx];
-    this.emitPlay(id, name, length);
+    let { id, name, length } = this.songsObjList[nextIdx];
+    window.playSong(id, name, length);
+  }
+
+  addPlayList() {
+    const songs = this.songsObjList.filter(data => {
+      return data.selected === true;
+    });
+    if (songs.length) {
+      const currentPlayAreaCount = Object.keys(window.PLAYAREA).length;
+      const newSongs = songs.map(data => {
+        const { id, name, length } = data;
+        return { id, name, length };
+      });
+      window.PLAYAREA["default" + currentPlayAreaCount] = new PlayArea(
+        newSongs,
+        false
+      );
+      document
+        .querySelector(".musiclist")
+        .appendChild(window.PLAYAREA["default" + currentPlayAreaCount].getEl());
+      const newBtn = createEl("button", ["default" + currentPlayAreaCount]);
+      newBtn.innerHTML = "New List" + currentPlayAreaCount;
+      document.querySelector(".playlist .list").appendChild(newBtn);
+    } else {
+      alert("Please select which you like song.");
+    }
   }
 
   getEl() {
@@ -330,12 +366,22 @@ class PlayList {
 }
 
 class PlayArea {
-  constructor(AUDIOS, playSong, pauseSong, stopSong) {
+  constructor(AUDIOS, isDefault) {
     this.playAreaDiv = createEl("div");
+    this.hide();
     this.btnsDIV = createEl("div", ["buttons", "listbuttons"]);
-    this.addListBTN = createEl("button");
-    this.addListBTN.innerHTML = "Add play list";
-    this.addListBTN.addEventListener("click", () => {});
+    if (isDefault) {
+      this.playAreaDiv.classList.add("default");
+      this.addListBTN = createEl("button");
+      this.addListBTN.innerHTML = "Add play list";
+      this.addListBTN.addEventListener("click", () => {
+        this.playList.addPlayList();
+      });
+    } else {
+      this.playAreaDiv.classList.add(
+        "default" + Object.keys(window.PLAYAREA).length
+      );
+    }
     this.sortBTN = createEl("button");
     this.sortBTN.innerHTML = "Sort";
     this.sortBTN.addEventListener("click", () => {
@@ -351,16 +397,14 @@ class PlayArea {
     this.deleteBTN.addEventListener("click", () => {
       this.playList.delete();
     });
-    this.btnsDIV.append(
-      this.addListBTN,
-      this.sortBTN,
-      this.randomBTN,
-      this.deleteBTN
-    );
+    if (isDefault) {
+      this.btnsDIV.append(this.addListBTN);
+    }
+    this.btnsDIV.append(this.sortBTN, this.randomBTN, this.deleteBTN);
     this.playAreaDiv.appendChild(this.btnsDIV);
 
-    this.playList = new PlayList(AUDIOS, playSong, pauseSong, stopSong);
-    window.playList = this.playList;
+    this.playList = new PlayList(AUDIOS);
+    // window.playList = this.playList;
     this.playAreaDiv.appendChild(this.playList.getEl());
   }
 

@@ -1,4 +1,4 @@
-import {createEl, addZero} from '../method'
+import { createEl, addZero } from "../method";
 
 class Bar {
   constructor() {

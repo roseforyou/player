@@ -1,4 +1,4 @@
-import {createEl, addZero} from '../method'
+import { createEl, addZero } from "../method";
 
 class PlayButtons {
   constructor(prev, play, stop, next) {
@@ -39,14 +39,14 @@ class PlayButtons {
       this.nextDiv
     );
 
-    this.status = '';
+    this.status = "";
   }
 
   setPlayTxt() {
-    if (this.status === 'playing') {
+    if (this.status === "playing") {
       this.playDiv.innerHTML = "Pause";
       this.playDiv.classList.add("on");
-    } else if (this.status === 'pause' || this.status==='stop') {
+    } else if (this.status === "pause" || this.status === "stop") {
       this.playDiv.innerHTML = "Play";
       this.playDiv.classList.remove("on");
     }

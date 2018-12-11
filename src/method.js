@@ -20,4 +20,12 @@ function addZero(str) {
   return str >= 10 ? str : "0" + str;
 }
 
-export { shuffleArray, createEl, addZero };
+function selector(key) {
+  return document.querySelector(key);
+}
+
+function selectorAll(key) {
+  return document.querySelectorAll(key);
+}
+
+export { shuffleArray, createEl, addZero, selector, selectorAll };

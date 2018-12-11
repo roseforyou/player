@@ -6,12 +6,16 @@ class Title {
     this.initLen = length || 0;
     this.length = length || 0;
 
+    this.span0 = createEl("span", ["img"]);
+    this.img = createEl("img", ["icon"]);
+    this.img.setAttribute('src', 'assets/favicon.png');
+    this.span0.append(this.img);
     this.span1 = createEl("span", ["name"]);
     this.span1.innerHTML = "Welcome to play music!";
     this.span2 = createEl("span", ["time"]);
     this.span2.innerHTML = "";
     this.div = createEl("div", ["title"]);
-    this.div.append(this.span1, this.span2);
+    this.div.append(this.span0, this.span1, this.span2);
 
     this.si = 0;
   }

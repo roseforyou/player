@@ -25,7 +25,14 @@ body {
   padding-top: 5px;
   border: 1px solid #d6d5d5;
 }
+@keyframes rotating {
+  from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}
+}
 
+@keyframes zero {
+  to {-webkit-transform: rotate(360deg);}
+}
 .title {
   width: 97%;
   height: 50px;
@@ -47,9 +54,20 @@ body {
 }
 
 .title .time {
+  width: 15%;
   text-align: center;
 }
 
+.title .icon {
+  width: 32px;
+}
+.title .img .icon {
+  animation: zero 0.5s linear;
+}
+
+.title .animate .icon {
+  animation: rotating 10s linear infinite;
+}
 .bar {
   width: 97%;
   height: 10px;
@@ -119,9 +137,9 @@ button {
 
 .playlist .list button {
   width: 92px;
-  height: 50px;
+  height: 46px;
   border-radius: 0;
-  margin: 0 2px;
+  margin: 2px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

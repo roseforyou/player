@@ -1,4 +1,4 @@
-import { createEl, addZero } from "../method";
+import { createEl, addZero, selector } from "../method";
 
 // song obj
 class Song {
@@ -46,6 +46,16 @@ class Song {
         this.cb.checked = true;
         this.li.classList.add("on");
       }
+
+      const currrentPlayAreaName = selector('.musiclist>div:not(.hide)').classList[0];
+      if (currrentPlayAreaName === window.CURRENTPLAYAREA) return;
+      const s = window.PLAYAREA[window.CURRENTPLAYAREA].playList.songsObjList.find(data => {
+        return data.status === "playing" || data.status === "pause";
+      });
+      if (s) {
+        s.setStop();
+      }
+      window.CURRENTPLAYAREA = selector('.musiclist>div:not(.hide)').classList[0];
     });
 
     this.span3 = createEl("span", ["time"]);
@@ -109,6 +119,7 @@ class PlayList {
     if (s) {
       s.setStop();
     }
+
     const ns = this.songsObjList
       .find(data => {
         return data.id === id;
@@ -287,8 +298,10 @@ class PlayList {
     const song = this.songsObjList.find(data => {
       return data.status === "playing" || data.status === "pause";
     });
-    song.setStop();
-    window.stopSong();
+    if (song) {
+      song.setStop();
+      window.stopSong();
+    }
   }
   prev() {
     const idx = this.songsObjList.findIndex(data => {
@@ -340,7 +353,7 @@ class PlayList {
       return data.selected === true;
     });
     if (songs.length) {
-      const currentPlayAreaCount = Object.keys(window.PLAYAREA).length;
+      const currentPlayAreaCount = ++window.CURRENTIDX;
       const newSongs = songs.map(data => {
         const { id, name, length } = data;
         return { id, name, length };
@@ -349,12 +362,11 @@ class PlayList {
         newSongs,
         false
       );
-      document
-        .querySelector(".musiclist")
+      selector(".musiclist")
         .appendChild(window.PLAYAREA["default" + currentPlayAreaCount].getEl());
       const newBtn = createEl("button", ["default" + currentPlayAreaCount]);
       newBtn.innerHTML = "New List" + currentPlayAreaCount;
-      document.querySelector(".playlist .list").appendChild(newBtn);
+      selector(".playlist .list").appendChild(newBtn);
     } else {
       alert("Please select which you like song.");
     }

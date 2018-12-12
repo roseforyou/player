@@ -38,20 +38,20 @@ class Title {
   }
 
   play() {
+    this.span0.classList.add('animate');
     clearInterval(this.si);
     this.si = setInterval(
-      function(ct) {
-        if (ct.length === 0) {
-          clearInterval(ct.si);
-          ct.length = ct.initLen;
+      () => {
+        if (this.length === 0) {
+          clearInterval(this.si);
+          this.length = this.initLen;
           // playlist next song
           return;
         }
-        ct.length--;
-        ct.setTime();
+        this.length--;
+        this.setTime();
       },
-      1000,
-      this
+      1000
     );
   }
 
@@ -60,6 +60,7 @@ class Title {
   }
 
   stop() {
+    this.span0.classList.remove('animate');
     clearInterval(this.si);
     this.length = this.initLen;
   }

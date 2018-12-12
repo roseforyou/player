@@ -240,17 +240,13 @@ class PlayList {
     ) {
       alert("Please select which you want to delete!");
     } else {
-      if (confirm("Are you sure delete the seleced song?!")) {
-        this.ul.querySelectorAll(".on").forEach(data => {
-          data.remove();
-        });
-        this.songsObjList = this.songsObjList.filter(data => {
-          if (data.status === "playing") {
-            window.stopSong();
-            data.setStop();
-          }
-          return data.selected === false;
-        });
+      if (selector('.musiclist>div:not(.hide)').classList.contains('default')){
+        window.loopAllPlayList(false);
+      } else {
+        const delSongName = this.songsObjList.filter(data=>{return data.selected===true}).map(data=>{return data.name;});
+        if (confirm(`Are you sure delete [${delSongName.join(',')}]?`)) {
+          window.delSelectedSongs(this, delSongName);
+        }
       }
     }
   }
@@ -390,7 +386,7 @@ class PlayArea {
       });
     } else {
       this.playAreaDiv.classList.add(
-        "default" + Object.keys(window.PLAYAREA).length
+        "default" + window.CURRENTIDX
       );
     }
     this.sortBTN = createEl("button");

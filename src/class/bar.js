@@ -32,17 +32,16 @@ class Bar {
   play() {
     clearInterval(this.si);
     this.si = setInterval(
-      function(ct) {
-        if (ct.length === 0) {
-          clearInterval(ct.si);
+      () => {
+        if (this.length === 0) {
+          clearInterval(this.si);
           // playlist next song
           return;
         }
-        ct.length--;
-        ct.formatLength();
+        this.length--;
+        this.formatLength();
       },
-      1000,
-      this
+      1000
     );
   }
 

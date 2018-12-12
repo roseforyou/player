@@ -187,6 +187,7 @@ ul {
   height: 40px;
   display: table;
   border: 1px solid white;
+  -webkit-user-drag: element;
 }
 
 .musiclist li:hover {

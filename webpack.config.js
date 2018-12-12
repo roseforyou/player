@@ -25,7 +25,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Player',
+      title: 'Music Player',
       meta: { viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no' },
       template: 'assets/main.html',
       inject: 'body',

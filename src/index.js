@@ -5,6 +5,10 @@ import Bar from "./class/bar";
 import PlayButtons from "./class/playButtons";
 import PlayArea from "./class/playList";
 
+AUDIOS.forEach(data=>{
+  Object.assign(data.length=Math.round(Math.random()*6*10+10), data);
+});
+
 //operate buttons [prev, play/pause, stop,  next]
 const playButtons = new PlayButtons();
 selector(".container").prepend(playButtons.getEl());
@@ -61,11 +65,62 @@ selector(".playlist .op").addEventListener("click", e => {
     }
   }
 });
+window.delSelectedSongs = (list, delArr)=>{
+  list.songsObjList.forEach(data=>{
+    if ((data.status === "playing" || data.status === "pause") && new Set(delArr).has(data.name)) {
+      window.stopSong();
+      data.setStop();
+    }
+  });
+
+  list.ul.querySelectorAll("li").forEach(data => {
+    if (delArr.includes(data.querySelector('.name').innerHTML)) {
+      data.remove();
+    }
+  });
+
+  list.songsObjList.filter(data=>{
+    return delArr.includes(data.name)
+  }).forEach(data=>{
+    list.songsObjList.splice(list.songsObjList.indexOf(data), 1);
+  })
+}
+window.loopAllPlayList = (isDelete) => {
+  const delSongName = window.PLAYAREA['default'].playList.songsObjList.filter(data=>{return data.selected===true}).map(data=>{return data.name;});
+  let containedListName = [];
+
+  if (isDelete) {
+    for(let key of Object.keys(window.PLAYAREA)) {
+      window.delSelectedSongs(window.PLAYAREA[key].playList, delSongName);
+    }
+  } else {
+    for(let key of Object.keys(window.PLAYAREA)) {
+      if (key!=='default') {
+        if (window.PLAYAREA[key].playList.songsObjList.find(data=>{
+          if (delSongName.includes(data.name)) {
+            return data;
+          }
+        })) {
+          containedListName.push(key);
+        }
+      }
+    }
+    let msg = `Are you sure delete [${delSongName.join(', ')}]?`;
+    if (containedListName.length) {
+      msg += `\nPlay list: [${containedListName.join(', ')}] also contains, will deleted!`;
+    }
+
+    if (confirm(msg)) {
+      window.loopAllPlayList(true);
+    }
+  }
+
+};
 
 window.CURRENTPLAYAREA = "default";
 window.CURRENTIDX = 0;
 window.PLAYAREA = {};
-window.playSong = function(id, name, length) {
+window.playSong = (id, name, length) => {
   if (name) title.setName(name);
   if (length) title.setLength(length);
   title.play();
@@ -76,7 +131,7 @@ window.playSong = function(id, name, length) {
   playButtons.setPlayStatus("playing");
 };
 
-window.stopSong = function() {
+window.stopSong = () => {
   title.setLength(0);
   title.stop();
 
@@ -84,7 +139,7 @@ window.stopSong = function() {
   playButtons.setPlayStatus("stop");
 };
 
-window.pauseSong = function() {
+window.pauseSong = () => {
   title.pause();
   bar.pause();
   playButtons.setPlayStatus("pause");
@@ -92,4 +147,5 @@ window.pauseSong = function() {
 
 window.PLAYAREA["default"] = new PlayArea(AUDIOS, true);
 selector(".musiclist").appendChild(window.PLAYAREA.default.getEl());
+window.PLAYAREA.default.playList.random();
 window.PLAYAREA.default.show();

@@ -45,7 +45,6 @@ selector(".playlist .list").addEventListener("click", e => {
         selector(".playlist .op").classList.remove("hide");
       }
 
-      // window.CURRENTPLAYAREA = currentEl.classList[0];
     }
   }
 });
@@ -59,7 +58,7 @@ selector(".playlist .op").addEventListener("click", e => {
       const btn = selector(".playlist .list button.on");
       window.PLAYAREA[btn.classList[0]].playList.stop();
       delete window.PLAYAREA[btn.classList[0]];
-      btn.remove();
+      btn.parentNode.remove();
 
       selector(".playlist .list .default").click();
     }

@@ -46,6 +46,7 @@ class Title {
           clearInterval(this.si);
           this.length = this.initLen;
           // playlist next song
+          window.PLAYAREA[window.CURRENTPLAYAREA].playList.next();
           return;
         }
         this.length--;
@@ -57,6 +58,7 @@ class Title {
 
   pause() {
     clearInterval(this.si);
+    this.span0.classList.remove('animate');
   }
 
   stop() {

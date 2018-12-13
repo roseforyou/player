@@ -252,34 +252,43 @@ class PlayList {
   }
 
   play() {
-    if (
-      this.songsObjList.find(data => {
-        return data.status === "playing";
-      })
-    )
-      return;
-
-    const pauseSong = this.songsObjList.find(data => {
-      return data.status === "pause";
-    });
-    if (pauseSong) {
-      pauseSong.setPlay();
-      window.playSong();
-      return;
-    }
-
-    const firstCheckedSong = this.songsObjList.find(data => {
-      return data.selected === true;
-    });
-
-    if (firstCheckedSong) {
-      firstCheckedSong.setPlay();
-      let { id, name, length } = firstCheckedSong;
-      window.playSong(id, name, length);
+    const currrentPlayAreaName = selector('.musiclist>div:not(.hide)').classList[0];
+    if (currrentPlayAreaName === window.CURRENTPLAYAREA) {
+      if (
+        this.songsObjList.find(data => {
+          return data.status === "playing";
+        })
+      )
+        return;
+  
+      const pauseSong = this.songsObjList.find(data => {
+        return data.status === "pause";
+      });
+      if (pauseSong) {
+        pauseSong.setPlay();
+        window.playSong();
+        return;
+      }
+  
+      const firstCheckedSong = this.songsObjList.find(data => {
+        return data.selected === true;
+      });
+  
+      if (firstCheckedSong) {
+        firstCheckedSong.setPlay();
+        let { id, name, length } = firstCheckedSong;
+        window.playSong(id, name, length);
+      } else {
+        this.songsObjList[0].setPlay();
+        let { id, name, length } = this.songsObjList[0];
+        window.playSong(id, name, length);
+      }
     } else {
-      this.songsObjList[0].setPlay();
-      let { id, name, length } = this.songsObjList[0];
-      window.playSong(id, name, length);
+      //window.CURRENTPLAYAREA under song is all 'stop' or 'ready' will play new switch list song.
+
+
+
+
     }
   }
   pause() {
@@ -362,7 +371,35 @@ class PlayList {
         .appendChild(window.PLAYAREA["default" + currentPlayAreaCount].getEl());
       const newBtn = createEl("button", ["default" + currentPlayAreaCount]);
       newBtn.innerHTML = "New List" + currentPlayAreaCount;
-      selector(".playlist .list").appendChild(newBtn);
+
+      const btnDiv = createEl("div");
+      btnDiv.appendChild(newBtn);
+
+      const span = createEl('span', ['hide']);
+      const input = createEl('input',[], 'text');
+      window.aaa = input
+      span.appendChild(input);
+      btnDiv.appendChild(span);
+
+      newBtn.addEventListener('dblclick', ()=>{
+        span.classList.remove('hide');
+        input.focus();
+      });
+
+      input.addEventListener('blur', ()=>{
+        span.classList.add('hide');
+      });
+
+      input.addEventListener('keypress', (e)=>{
+        var key = e.which || e.keyCode;
+        if (key === 13) {
+          newBtn.innerHTML = input.value.trim();
+          input.blur();
+          input.value = '';
+        }
+      });
+
+      selector(".playlist .list").appendChild(btnDiv);
     } else {
       alert("Please select which you like song.");
     }

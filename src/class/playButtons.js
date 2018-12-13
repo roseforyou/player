@@ -10,25 +10,29 @@ class PlayButtons {
     this.prevDiv = createEl("button");
     this.prevDiv.innerHTML = "Prev";
     this.prevDiv.addEventListener("click", () => {
-      this.prev();
+      window.PLAYAREA[window.CURRENTPLAYAREA].playList.prev();
     });
 
     this.playDiv = createEl("button");
     this.playDiv.innerHTML = "Play";
     this.playDiv.addEventListener("click", () => {
-      this.play();
+      if (this.status==='playing') {
+        window.PLAYAREA[window.CURRENTPLAYAREA].playList.pause();
+      } else {
+        window.PLAYAREA[window.CURRENTPLAYAREA].playList.play();
+      }
     });
 
     this.stopDiv = createEl("button");
     this.stopDiv.innerHTML = "Stop";
     this.stopDiv.addEventListener("click", () => {
-      this.stop();
+      window.PLAYAREA[window.CURRENTPLAYAREA].playList.stop();
     });
 
     this.nextDiv = createEl("button");
     this.nextDiv.innerHTML = "Next";
     this.nextDiv.addEventListener("click", () => {
-      this.next();
+      window.PLAYAREA[window.CURRENTPLAYAREA].playList.next();
     });
 
     this.buttonsDiv = createEl("div", ["buttons"]);

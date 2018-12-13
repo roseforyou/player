@@ -1,6 +1,5 @@
 body {
-  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei",
-    "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
   color: #000000;
   background-color: #9b9075;
   min-width: 510px;
@@ -25,14 +24,22 @@ body {
   padding-top: 5px;
   border: 1px solid #d6d5d5;
 }
+
 @keyframes rotating {
-  from {-webkit-transform: rotate(0deg);}
-  to {-webkit-transform: rotate(360deg);}
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes zero {
-  to {-webkit-transform: rotate(360deg);}
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
+
 .title {
   width: 97%;
   height: 50px;
@@ -51,6 +58,10 @@ body {
 
 .title .name {
   width: 85%;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .title .time {
@@ -61,6 +72,7 @@ body {
 .title .icon {
   width: 32px;
 }
+
 .title .img .icon {
   animation: zero 0.5s linear;
 }
@@ -68,6 +80,7 @@ body {
 .title .animate .icon {
   animation: rotating 10s linear infinite;
 }
+
 .bar {
   width: 97%;
   height: 10px;
@@ -102,8 +115,7 @@ button {
   margin: 0 2px;
 }
 
-.buttons button:hover,
-.buttons button.on {
+.buttons button:hover, .buttons button.on {
   background-color: #f1544d;
   color: white;
 }
@@ -125,6 +137,28 @@ button {
   overflow-y: auto;
 }
 
+.playlist .list>div {
+  position: relative;
+  width: 92px;
+  height: 46px;
+  margin: 2px;
+  display: inline-block;
+}
+
+.playlist .list>div>span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 46px;
+}
+
+.playlist .list>div>span>input {
+  width: 88px;
+  height: 25px;
+  margin: 12px 2px;
+}
+
 .playlist .op {
   position: absolute;
   top: 13px;
@@ -139,15 +173,12 @@ button {
   width: 92px;
   height: 46px;
   border-radius: 0;
-  margin: 2px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.playlist .list button:hover,
-.playlist .list button.on,
-.playlist .op button:hover {
+.playlist .list button:hover, .playlist .list button.on, .playlist .op button:hover {
   background-color: #f1544d;
   color: white;
 }
@@ -220,6 +251,10 @@ ul {
 .musiclist li .name {
   width: 75%;
   cursor: pointer;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .musiclist li .time {

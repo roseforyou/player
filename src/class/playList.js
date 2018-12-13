@@ -71,6 +71,8 @@ class Song {
     this.li.appendChild(this.span2);
     this.li.appendChild(this.span3);
 
+    //https://www.html5rocks.com/en/tutorials/dnd/basics/
+    //test
     let dragSrcEl = null;
 
     function handleDragStart(e) {

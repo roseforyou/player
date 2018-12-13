@@ -38,10 +38,10 @@ class Bar {
           // playlist next song
           return;
         }
-        this.length--;
+        this.length = this.length - 0.05;
         this.formatLength();
       },
-      1000
+      50
     );
   }
 

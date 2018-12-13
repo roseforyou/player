@@ -10,6 +10,7 @@ class Song {
     this.status = "ready"; // ready playing pause stop
 
     this.li = createEl("li");
+    this.li.setAttribute('draggable', "true");
     this.cb = createEl("input", [], "checkbox");
     this.cb.addEventListener("click", () => {
       if (this.selected) {
@@ -47,15 +48,20 @@ class Song {
         this.li.classList.add("on");
       }
 
-      const currrentPlayAreaName = selector('.musiclist>div:not(.hide)').classList[0];
+      const currrentPlayAreaName = selector(".musiclist>div:not(.hide)")
+        .classList[0];
       if (currrentPlayAreaName === window.CURRENTPLAYAREA) return;
-      const s = window.PLAYAREA[window.CURRENTPLAYAREA].playList.songsObjList.find(data => {
+      const s = window.PLAYAREA[
+        window.CURRENTPLAYAREA
+      ].playList.songsObjList.find(data => {
         return data.status === "playing" || data.status === "pause";
       });
       if (s) {
         s.setStop();
       }
-      window.CURRENTPLAYAREA = selector('.musiclist>div:not(.hide)').classList[0];
+      window.CURRENTPLAYAREA = selector(
+        ".musiclist>div:not(.hide)"
+      ).classList[0];
     });
 
     this.span3 = createEl("span", ["time"]);
@@ -64,6 +70,69 @@ class Song {
     this.li.appendChild(this.span1);
     this.li.appendChild(this.span2);
     this.li.appendChild(this.span3);
+
+    let dragSrcEl = null;
+
+    function handleDragStart(e) {
+      // Target (this) element is the source node.
+      this.style.opacity = '0.4';
+
+      dragSrcEl = this;
+
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault(); // Necessary. Allows us to drop.
+      }
+
+      e.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
+
+      return false;
+    }
+
+    function handleDragEnter(e) {
+      // this / e.target is the current hover target.
+      console.log(e.target)
+      console.log(this)
+      this.classList.add("over");
+    }
+
+    function handleDragLeave(e) {
+      this.classList.remove("over"); // this / e.target is previous target element.
+    }
+    function handleDrop(e) {
+      // this/e.target is current target element.
+    
+      if (e.stopPropagation) {
+        e.stopPropagation(); // Stops some browsers from redirecting.
+      }
+    
+      // Don't do anything if dropping the same column we're dragging.
+      if (dragSrcEl != this) {
+        // Set the source column's HTML to the HTML of the column we dropped on.
+        dragSrcEl.innerHTML = this.innerHTML;
+        this.innerHTML = e.dataTransfer.getData('text/html');
+      }
+    
+      return false;
+    }
+
+    function handleDragEnd(e) {
+      // this/e.target is the source node.
+
+      [].forEach.call(cols, function(col) {
+        col.classList.remove("over");
+      });
+    }
+    this.li.addEventListener("dragstart", handleDragStart, false);
+    this.li.addEventListener("dragenter", handleDragEnter, false);
+    this.li.addEventListener("dragover", handleDragOver, false);
+    this.li.addEventListener("dragleave", handleDragLeave, false);
+    this.li.addEventListener("drop", handleDrop, false);
+    this.li.addEventListener("dragend", handleDragEnd, false);
   }
 
   formatTime(length) {
@@ -240,55 +309,84 @@ class PlayList {
     ) {
       alert("Please select which you want to delete!");
     } else {
-      if (selector('.musiclist>div:not(.hide)').classList.contains('default')){
+      if (selector(".musiclist>div:not(.hide)").classList.contains("default")) {
         window.loopAllPlayList(false);
       } else {
-        const delSongName = this.songsObjList.filter(data=>{return data.selected===true}).map(data=>{return data.name;});
-        if (confirm(`Are you sure delete [${delSongName.join(',')}]?`)) {
+        const delSongName = this.songsObjList
+          .filter(data => {
+            return data.selected === true;
+          })
+          .map(data => {
+            return data.name;
+          });
+        if (confirm(`Are you sure delete [${delSongName.join(",")}]?`)) {
           window.delSelectedSongs(this, delSongName);
         }
       }
     }
   }
 
+  _play(songs) {
+    if (
+      songs.find(data => {
+        return data.status === "playing";
+      })
+    )
+      return;
+
+    const pauseSong = songs.find(data => {
+      return data.status === "pause";
+    });
+    if (pauseSong) {
+      pauseSong.setPlay();
+      window.playSong();
+      return;
+    }
+
+    const firstCheckedSong = songs.find(data => {
+      return data.selected === true;
+    });
+
+    if (firstCheckedSong) {
+      firstCheckedSong.setPlay();
+      let { id, name, length } = firstCheckedSong;
+      window.playSong(id, name, length);
+    } else {
+      songs[0].setPlay();
+      let { id, name, length } = songs[0];
+      window.playSong(id, name, length);
+    }
+  }
+
   play() {
-    const currrentPlayAreaName = selector('.musiclist>div:not(.hide)').classList[0];
+    const currrentPlayAreaName = selector(".musiclist>div:not(.hide)")
+      .classList[0];
     if (currrentPlayAreaName === window.CURRENTPLAYAREA) {
-      if (
-        this.songsObjList.find(data => {
-          return data.status === "playing";
-        })
-      )
-        return;
-  
-      const pauseSong = this.songsObjList.find(data => {
-        return data.status === "pause";
-      });
-      if (pauseSong) {
-        pauseSong.setPlay();
-        window.playSong();
-        return;
-      }
-  
-      const firstCheckedSong = this.songsObjList.find(data => {
-        return data.selected === true;
-      });
-  
-      if (firstCheckedSong) {
-        firstCheckedSong.setPlay();
-        let { id, name, length } = firstCheckedSong;
-        window.playSong(id, name, length);
-      } else {
-        this.songsObjList[0].setPlay();
-        let { id, name, length } = this.songsObjList[0];
-        window.playSong(id, name, length);
-      }
+      this._play(this.songsObjList);
     } else {
       //window.CURRENTPLAYAREA under song is all 'stop' or 'ready' will play new switch list song.
+      const findPlayingSongs = window.PLAYAREA[
+        window.CURRENTPLAYAREA
+      ].playList.songsObjList.find(data => {
+        return data.status === "playing" || data.status === "pause";
+      });
+      if (findPlayingSongs) {
+        //if have playing song, play old play area's song.
 
+        this._play(
+          window.PLAYAREA[window.CURRENTPLAYAREA].playList.songsObjList
+        );
+      } else {
+        //if not have playing song, play new switch list song.
 
+        window.CURRENTPLAYAREA = selector(
+          ".musiclist>div:not(.hide)"
+        ).classList[0];
 
-
+        this._play(
+          window.PLAYAREA[window.CURRENTPLAYAREA].playList.songsObjList
+        );
+      }
     }
   }
   pause() {
@@ -367,35 +465,36 @@ class PlayList {
         newSongs,
         false
       );
-      selector(".musiclist")
-        .appendChild(window.PLAYAREA["default" + currentPlayAreaCount].getEl());
+      selector(".musiclist").appendChild(
+        window.PLAYAREA["default" + currentPlayAreaCount].getEl()
+      );
       const newBtn = createEl("button", ["default" + currentPlayAreaCount]);
       newBtn.innerHTML = "New List" + currentPlayAreaCount;
 
       const btnDiv = createEl("div");
       btnDiv.appendChild(newBtn);
 
-      const span = createEl('span', ['hide']);
-      const input = createEl('input',[], 'text');
-      window.aaa = input
+      const span = createEl("span", ["hide"]);
+      const input = createEl("input", [], "text");
+      window.aaa = input;
       span.appendChild(input);
       btnDiv.appendChild(span);
 
-      newBtn.addEventListener('dblclick', ()=>{
-        span.classList.remove('hide');
+      newBtn.addEventListener("dblclick", () => {
+        span.classList.remove("hide");
         input.focus();
       });
 
-      input.addEventListener('blur', ()=>{
-        span.classList.add('hide');
+      input.addEventListener("blur", () => {
+        span.classList.add("hide");
       });
 
-      input.addEventListener('keypress', (e)=>{
+      input.addEventListener("keypress", e => {
         var key = e.which || e.keyCode;
         if (key === 13) {
           newBtn.innerHTML = input.value.trim();
           input.blur();
-          input.value = '';
+          input.value = "";
         }
       });
 
@@ -422,9 +521,7 @@ class PlayArea {
         this.playList.addPlayList();
       });
     } else {
-      this.playAreaDiv.classList.add(
-        "default" + window.CURRENTIDX
-      );
+      this.playAreaDiv.classList.add("default" + window.CURRENTIDX);
     }
     this.sortBTN = createEl("button");
     this.sortBTN.innerHTML = "Sort";

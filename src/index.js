@@ -1,15 +1,15 @@
-import { selector } from './method'
+import { selector } from "./method";
 import AUDIOS from "./data";
 import Title from "./class/title";
 import Bar from "./class/bar";
 import PlayButtons from "./class/playButtons";
 import PlayArea from "./class/playList";
 
-AUDIOS.forEach(data=>{
-  Object.assign(data.length=Math.round(Math.random()*6*10+10), data);
+AUDIOS.forEach(data => {
+  Object.assign((data.length = Math.round(Math.random() * 6 * 10 + 10)), data);
 });
 
-//operate buttons [prev, play/pause, stop,  next]
+//operate buttons [prev, play/pause, stop, next]
 const playButtons = new PlayButtons();
 selector(".container").prepend(playButtons.getEl());
 
@@ -31,20 +31,19 @@ selector(".playlist .list").addEventListener("click", e => {
       const onBtn = selector(".playlist .list button.on");
       if (onBtn) {
         onBtn.classList.remove("on");
-        selector(".musiclist>div:not(.hide)")
-          .classList.add("hide");
+        selector(".musiclist>div:not(.hide)").classList.add("hide");
       }
       currentEl.classList.add("on");
 
-      selector(".musiclist>." + currentEl.classList[0])
-        .classList.remove("hide");
+      selector(".musiclist>." + currentEl.classList[0]).classList.remove(
+        "hide"
+      );
 
       if (currentEl.classList[0] === "default") {
         selector(".playlist .op").classList.add("hide");
       } else {
         selector(".playlist .op").classList.remove("hide");
       }
-
     }
   }
 });
@@ -64,56 +63,74 @@ selector(".playlist .op").addEventListener("click", e => {
     }
   }
 });
-window.delSelectedSongs = (list, delArr)=>{
-  list.songsObjList.forEach(data=>{
-    if ((data.status === "playing" || data.status === "pause") && new Set(delArr).has(data.name)) {
+window.delSelectedSongs = (list, delArr) => {
+  list.songsObjList.forEach(data => {
+    if (
+      (data.status === "playing" || data.status === "pause") &&
+      new Set(delArr).has(data.name)
+    ) {
       window.stopSong();
       data.setStop();
     }
   });
 
   list.ul.querySelectorAll("li").forEach(data => {
-    if (delArr.includes(data.querySelector('.name').innerHTML)) {
+    if (delArr.includes(data.querySelector(".name").innerHTML)) {
       data.remove();
     }
   });
 
-  list.songsObjList.filter(data=>{
-    return delArr.includes(data.name)
-  }).forEach(data=>{
-    list.songsObjList.splice(list.songsObjList.indexOf(data), 1);
-  })
-}
-window.loopAllPlayList = (isDelete) => {
-  const delSongName = window.PLAYAREA['default'].playList.songsObjList.filter(data=>{return data.selected===true}).map(data=>{return data.name;});
+  list.songsObjList
+    .filter(data => {
+      return delArr.includes(data.name);
+    })
+    .forEach(data => {
+      list.songsObjList.splice(list.songsObjList.indexOf(data), 1);
+    });
+};
+window.loopAllPlayList = isDelete => {
+  const delSongName = window.PLAYAREA["default"].playList.songsObjList
+    .filter(data => {
+      return data.selected === true;
+    })
+    .map(data => {
+      return data.name;
+    });
   let containedListName = [];
 
   if (isDelete) {
-    for(let key of Object.keys(window.PLAYAREA)) {
+    for (let key of Object.keys(window.PLAYAREA)) {
       window.delSelectedSongs(window.PLAYAREA[key].playList, delSongName);
     }
   } else {
-    for(let key of Object.keys(window.PLAYAREA)) {
-      if (key!=='default') {
-        if (window.PLAYAREA[key].playList.songsObjList.find(data=>{
-          if (delSongName.includes(data.name)) {
-            return data;
-          }
-        })) {
+    for (let key of Object.keys(window.PLAYAREA)) {
+      if (key !== "default") {
+        if (
+          window.PLAYAREA[key].playList.songsObjList.find(data => {
+            if (delSongName.includes(data.name)) {
+              return data;
+            }
+          })
+        ) {
           containedListName.push(key);
         }
       }
     }
-    let msg = `Are you sure delete [${delSongName.join(', ')}]?`;
+    let msg = `Are you sure delete [${delSongName.join(", ")}]?`;
     if (containedListName.length) {
-      msg += `\nPlay list: [${containedListName.join(', ')}] also contains, will deleted!`;
+      containedListName = containedListName.map(data => {
+        console.log(data);
+        return selector(".playlist ." + data).innerHTML;
+      });
+      msg += `\nPlay List: [${containedListName.join(
+        ", "
+      )}] also contains, will deleted!`;
     }
 
     if (confirm(msg)) {
       window.loopAllPlayList(true);
     }
   }
-
 };
 
 window.CURRENTPLAYAREA = "default";
@@ -148,3 +165,18 @@ window.PLAYAREA["default"] = new PlayArea(AUDIOS, true);
 selector(".musiclist").appendChild(window.PLAYAREA.default.getEl());
 window.PLAYAREA.default.playList.random();
 window.PLAYAREA.default.show();
+
+window.onkeyup = e => {
+  var key = e.which || e.keyCode;
+  console.log(key)
+  if (key === 32) {
+    document.querySelectorAll('.container>.buttons button')[1].click();
+  }
+  if (key === 38) {
+    window.PLAYAREA[window.CURRENTPLAYAREA].playList.prev();
+  }
+  if (key === 40) {
+    window.PLAYAREA[window.CURRENTPLAYAREA].playList.next();
+  }
+};
+

@@ -72,62 +72,48 @@ class Song {
     this.li.appendChild(this.span3);
 
     //https://www.html5rocks.com/en/tutorials/dnd/basics/
-    //test
-    let dragSrcEl = null;
-
-    function handleDragStart(e) {
-      // Target (this) element is the source node.
-      this.style.opacity = '0.4';
-
-      dragSrcEl = this;
-
+    const handleDragStart = (e) => {
+      this.dragFrom = true;
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.innerHTML);
     }
 
-    function handleDragOver(e) {
+    const handleDragEnter = (e) => {
+      this.li.classList.add("over");
+    }
+
+    const handleDragLeave = (e)=> {
+      this.li.classList.remove('over');
+    }
+
+    const handleDragOver = (e)=> {
       if (e.preventDefault) {
         e.preventDefault(); // Necessary. Allows us to drop.
       }
 
       e.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
-
       return false;
     }
 
-    function handleDragEnter(e) {
-      // this / e.target is the current hover target.
-      console.log(e.target)
-      console.log(this)
-      this.classList.add("over");
-    }
-
-    function handleDragLeave(e) {
-      this.classList.remove("over"); // this / e.target is previous target element.
-    }
-    function handleDrop(e) {
-      // this/e.target is current target element.
-    
+    const handleDrop = (e)=>{
       if (e.stopPropagation) {
         e.stopPropagation(); // Stops some browsers from redirecting.
       }
-    
-      // Don't do anything if dropping the same column we're dragging.
-      if (dragSrcEl != this) {
-        // Set the source column's HTML to the HTML of the column we dropped on.
-        dragSrcEl.innerHTML = this.innerHTML;
-        this.innerHTML = e.dataTransfer.getData('text/html');
+      this.dragTo = true;
+
+      const idxFrom = this.getDragIdx('dragFrom');
+      const idxTo = this.getDragIdx('dragTo');
+
+      if (idxFrom !== idxTo) {
+          this.swapNodes(this.getDragLi(idxFrom), this.getDragLi(idxTo));
+          this.swapArrayItem(idxFrom, idxTo);
       }
-    
-      return false;
     }
 
-    function handleDragEnd(e) {
-      // this/e.target is the source node.
-
-      [].forEach.call(cols, function(col) {
-        col.classList.remove("over");
-      });
+    const handleDragEnd = () => {
+      window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.ul.querySelectorAll('li').forEach(data=>data.classList.remove('over'));
+      const songs = window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList;
+      songs.find(data=>{if (data.hasOwnProperty('dragTo')) delete data.dragTo});
+      songs.find(data=>{if (data.hasOwnProperty('dragFrom')) delete data.dragFrom});
     }
     this.li.addEventListener("dragstart", handleDragStart, false);
     this.li.addEventListener("dragenter", handleDragEnter, false);
@@ -135,6 +121,25 @@ class Song {
     this.li.addEventListener("dragleave", handleDragLeave, false);
     this.li.addEventListener("drop", handleDrop, false);
     this.li.addEventListener("dragend", handleDragEnd, false);
+  }
+  getDragLi(idx) {
+    return window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.ul.querySelectorAll('li')[idx];
+  }
+  getDragIdx(prop) {
+    return window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList.findIndex(data=>{
+      return data[prop] === true;
+    });
+  }
+  swapArrayItem(a, b) {
+    const x = window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[b]
+    window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[b] = window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[a];
+    window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[a] = x;
+  }
+  swapNodes(a, b) {
+    const aparent = a.parentNode;
+    const asibling = a.nextSibling === b ? a : a.nextSibling;
+    b.parentNode.insertBefore(a, b);
+    aparent.insertBefore(b, asibling);
   }
 
   formatTime(length) {
@@ -354,6 +359,7 @@ class PlayList {
       let { id, name, length } = firstCheckedSong;
       window.playSong(id, name, length);
     } else {
+      if (songs.length === 0) return;
       songs[0].setPlay();
       let { id, name, length } = songs[0];
       window.playSong(id, name, length);
@@ -492,7 +498,7 @@ class PlayList {
       });
 
       input.addEventListener("keypress", e => {
-        var key = e.which || e.keyCode;
+        let key = e.which || e.keyCode;
         if (key === 13) {
           newBtn.innerHTML = input.value.trim();
           input.blur();

@@ -167,7 +167,7 @@ window.PLAYAREA.default.playList.random();
 window.PLAYAREA.default.show();
 
 window.onkeyup = e => {
-  var key = e.which || e.keyCode;
+  let key = e.which || e.keyCode;
   console.log(key)
   if (key === 32) {
     document.querySelectorAll('.container>.buttons button')[1].click();

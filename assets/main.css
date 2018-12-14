@@ -234,27 +234,22 @@ ul {
   width: 99%;
   height: 40px;
   display: table;
-  border: 1px solid white;
-  -webkit-user-drag: element;
-  /* transition-property: all;
-  transition-duration: 0.3s; */
+  transition-property: background-color;
+  transition-duration: 0.3s;
 }
 
-.musiclist li.over {
-  border: 2px dashed #000;
-}
-
-.musiclist li:hover {
-  border: 1px solid #f1544d;
-}
-
-.musiclist li.on {
-  border: 1px solid #f1544d;
+.musiclist li:hover, .musiclist li.on {
+  background-color: #ecf1f7;
 }
 
 .musiclist li.playing {
   background-color: bisque;
 }
+
+.musiclist li.over {
+  border: 2px dashed #f1544d;
+}
+
 
 .musiclist li span {
   display: table-cell;

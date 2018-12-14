@@ -1,5 +1,6 @@
 body {
-  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei",
+    "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
   color: #000000;
   background-color: #9b9075;
   min-width: 510px;
@@ -15,7 +16,6 @@ body {
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none;
-  /* Required to make elements draggable in old WebKit */
   -khtml-user-drag: element;
   -webkit-user-drag: element;
 }
@@ -31,7 +31,7 @@ body {
   background-color: #ecf1f7;
   padding-top: 5px;
   border: 1px solid #d6d5d5;
-  box-shadow: 21px 21px 20px -9px rgba(0,0,0,0.4);
+  box-shadow: 21px 21px 20px -9px rgba(0, 0, 0, 0.4);
 }
 
 @keyframes rotating {
@@ -117,10 +117,10 @@ button {
   cursor: pointer;
   outline: 0;
   transition-property: all;
-  transition-duration: .3s
+  transition-duration: 0.3s;
 }
 button:active {
-  box-shadow: inset 0 5px 5px 0 rgba(0,0,0,0.4);
+  box-shadow: inset 0 5px 5px 0 rgba(0, 0, 0, 0.4);
   outline: 0;
 }
 
@@ -134,7 +134,8 @@ button:active {
   margin: 0 2px;
 }
 
-.buttons button:hover, .buttons button.on {
+.buttons button:hover,
+.buttons button.on {
   background-color: #f1544d;
   color: white;
 }
@@ -151,21 +152,25 @@ button:active {
 
 .playlist .list {
   width: 83%;
-  height: 50px;
+  height: 54px;
   margin: 3px 0;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.playlist .list>div {
+.playlist .list > div {
   position: relative;
   width: 92px;
   height: 46px;
   margin: 2px;
   display: inline-block;
 }
+.playlist .list > div.over {
+  border: 2px dashed #000;
+  margin: 0;
+}
 
-.playlist .list>div>span {
+.playlist .list > div > span {
   position: absolute;
   left: 0;
   top: 0;
@@ -173,7 +178,7 @@ button:active {
   height: 46px;
 }
 
-.playlist .list>div>span>input {
+.playlist .list > div > span > input {
   width: 88px;
   height: 25px;
   margin: 12px 2px;
@@ -198,7 +203,12 @@ button:active {
   text-overflow: ellipsis;
 }
 
-.playlist .list button:hover, .playlist .list button.on, .playlist .op button:hover {
+.playlist .list button:hover {
+  background-color: #f1544dad;
+  color: white;
+}
+.playlist .list button.on,
+.playlist .op button:hover {
   background-color: #f1544d;
   color: white;
 }
@@ -238,7 +248,10 @@ ul {
   transition-duration: 0.3s;
 }
 
-.musiclist li:hover, .musiclist li.on {
+.musiclist li:hover {
+  background-color: #ecf1f787;
+}
+.musiclist li.on {
   background-color: #ecf1f7;
 }
 
@@ -249,7 +262,6 @@ ul {
 .musiclist li.over {
   border: 2px dashed #f1544d;
 }
-
 
 .musiclist li span {
   display: table-cell;

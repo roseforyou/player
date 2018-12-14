@@ -1,178 +1,6 @@
-import { createEl, addZero, selector } from "../method";
-
-// song obj
-class Song {
-  constructor(id, name, length, playListObj) {
-    Object.assign(this, { id, name, length, playListObj });
-
-    this.selected = false;
-
-    this.status = "ready"; // ready playing pause stop
-
-    this.li = createEl("li");
-    this.li.setAttribute('draggable', "true");
-    this.cb = createEl("input", [], "checkbox");
-    this.cb.addEventListener("click", () => {
-      if (this.selected) {
-        this.selected = false;
-        this.li.classList.remove("on");
-      } else {
-        this.selected = true;
-        this.li.classList.add("on");
-      }
-    });
-
-    this.span1 = createEl("span", ["cb"]);
-    this.span1.appendChild(this.cb);
-
-    this.span2 = createEl("span", ["name"]);
-    this.span2.innerHTML = this.name;
-    this.span2.addEventListener("click", () => {
-      if (this.selected) {
-        this.selected = false;
-        this.cb.checked = false;
-        this.li.classList.remove("on");
-      } else {
-        this.selected = true;
-        this.cb.checked = true;
-        this.li.classList.add("on");
-      }
-    });
-
-    this.span2.addEventListener("dblclick", () => {
-      if (this.status === "playing") return;
-      this.playListObj.playSong(this.id, this.name, this.length);
-      if (!this.selected) {
-        this.selected = true;
-        this.cb.checked = true;
-        this.li.classList.add("on");
-      }
-
-      const currrentPlayAreaName = selector(".musiclist>div:not(.hide)")
-        .classList[0];
-      if (currrentPlayAreaName === window.CURRENTPLAYAREA) return;
-      const s = window.PLAYAREA[
-        window.CURRENTPLAYAREA
-      ].playList.songsObjList.find(data => {
-        return data.status === "playing" || data.status === "pause";
-      });
-      if (s) {
-        s.setStop();
-      }
-      window.CURRENTPLAYAREA = selector(
-        ".musiclist>div:not(.hide)"
-      ).classList[0];
-    });
-
-    this.span3 = createEl("span", ["time"]);
-    this.span3.innerHTML = this.formatTime(this.length);
-
-    this.li.appendChild(this.span1);
-    this.li.appendChild(this.span2);
-    this.li.appendChild(this.span3);
-
-    //https://www.html5rocks.com/en/tutorials/dnd/basics/
-    const handleDragStart = (e) => {
-      this.dragFrom = true;
-      e.dataTransfer.effectAllowed = 'move';
-    }
-
-    const handleDragEnter = (e) => {
-      this.li.classList.add("over");
-    }
-
-    const handleDragLeave = (e)=> {
-      this.li.classList.remove('over');
-    }
-
-    const handleDragOver = (e)=> {
-      if (e.preventDefault) {
-        e.preventDefault(); // Necessary. Allows us to drop.
-      }
-
-      e.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
-      return false;
-    }
-
-    const handleDrop = (e)=>{
-      if (e.stopPropagation) {
-        e.stopPropagation(); // Stops some browsers from redirecting.
-      }
-      this.dragTo = true;
-
-      const idxFrom = this.getDragIdx('dragFrom');
-      const idxTo = this.getDragIdx('dragTo');
-
-      if (idxFrom !== idxTo) {
-          this.swapNodes(this.getDragLi(idxFrom), this.getDragLi(idxTo));
-          this.swapArrayItem(idxFrom, idxTo);
-      }
-    }
-
-    const handleDragEnd = () => {
-      window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.ul.querySelectorAll('li').forEach(data=>data.classList.remove('over'));
-      const songs = window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList;
-      songs.find(data=>{if (data.hasOwnProperty('dragTo')) delete data.dragTo});
-      songs.find(data=>{if (data.hasOwnProperty('dragFrom')) delete data.dragFrom});
-    }
-    this.li.addEventListener("dragstart", handleDragStart, false);
-    this.li.addEventListener("dragenter", handleDragEnter, false);
-    this.li.addEventListener("dragover", handleDragOver, false);
-    this.li.addEventListener("dragleave", handleDragLeave, false);
-    this.li.addEventListener("drop", handleDrop, false);
-    this.li.addEventListener("dragend", handleDragEnd, false);
-  }
-  getDragLi(idx) {
-    return window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.ul.querySelectorAll('li')[idx];
-  }
-  getDragIdx(prop) {
-    return window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList.findIndex(data=>{
-      return data[prop] === true;
-    });
-  }
-  swapArrayItem(a, b) {
-    const x = window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[b]
-    window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[b] = window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[a];
-    window.PLAYAREA[selector('.playlist .list button.on').classList[0]].playList.songsObjList[a] = x;
-  }
-  swapNodes(a, b) {
-    const aparent = a.parentNode;
-    const asibling = a.nextSibling === b ? a : a.nextSibling;
-    b.parentNode.insertBefore(a, b);
-    aparent.insertBefore(b, asibling);
-  }
-
-  formatTime(length) {
-    return addZero(Math.floor(length / 60)) + ":" + addZero(length % 60);
-  }
-
-  setPlay() {
-    if (this.status === "playing") {
-      this.setPause();
-      return;
-    }
-    this.li.classList.add("playing");
-    this.status = "playing";
-  }
-
-  setStop() {
-    if (this.status === "stop") return;
-    this.li.classList.remove("playing");
-    this.status = "stop";
-  }
-
-  setPause() {
-    if (this.status === "pause") {
-      this.setPlay();
-      return;
-    }
-    this.status = "pause";
-  }
-
-  getEl() {
-    return this.li;
-  }
-}
+import { createEl, selector, selectorAll } from "../method";
+import Song from "./song";
+import PlayArea from "./playArea";
 
 class PlayList {
   constructor(songsList) {
@@ -432,6 +260,7 @@ class PlayList {
       prevIdx = this.songsObjList.length - 1;
     }
 
+    if (this.songsObjList.length === 0) return;
     this.songsObjList[prevIdx].setPlay();
     let { id, name, length } = this.songsObjList[prevIdx];
     window.playSong(id, name, length);
@@ -453,7 +282,7 @@ class PlayList {
     } else {
       nextIdx = 0;
     }
-
+    if (this.songsObjList.length === 0) return;
     this.songsObjList[nextIdx].setPlay();
     let { id, name, length } = this.songsObjList[nextIdx];
     window.playSong(id, name, length);
@@ -480,11 +309,12 @@ class PlayList {
       newBtn.innerHTML = "New List" + currentPlayAreaCount;
 
       const btnDiv = createEl("div");
+      btnDiv.setAttribute("draggable", true);
       btnDiv.appendChild(newBtn);
 
       const span = createEl("span", ["hide"]);
       const input = createEl("input", [], "text");
-      window.aaa = input;
+
       span.appendChild(input);
       btnDiv.appendChild(span);
 
@@ -507,9 +337,89 @@ class PlayList {
       });
 
       selector(".playlist .list").appendChild(btnDiv);
+      //https://www.html5rocks.com/en/tutorials/dnd/basics/
+      const handleDragStart = e => {
+        btnDiv.setAttribute("dragFrom", true);
+        e.dataTransfer.setData("tag", "button");
+        e.dataTransfer.effectAllowed = "move";
+      };
+
+      const handleDragEnter = e => {
+        btnDiv.classList.add("over");
+      };
+
+      const handleDragLeave = e => {
+        btnDiv.classList.remove("over");
+      };
+
+      const handleDragOver = e => {
+        if (e.preventDefault) {
+          e.preventDefault(); // Necessary. Allows us to drop.
+        }
+
+        e.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
+        return false;
+      };
+
+      const handleDrop = e => {
+        if (!e.dataTransfer.getData("tag")) {
+          this.clearDragClass("over");
+          return;
+        }
+        if (e.stopPropagation) {
+          e.stopPropagation(); // Stops some browsers from redirecting.
+        }
+        btnDiv.setAttribute("dragTo", true);
+
+        const idxFrom = this.getDragIdx("dragFrom");
+        const idxTo = this.getDragIdx("dragTo");
+
+        if (idxFrom !== idxTo) {
+          this.swapNodes(this.getDragBtn(idxFrom), this.getDragBtn(idxTo));
+        }
+      };
+
+      const handleDragEnd = () => {
+        this.clearDragClass("over");
+        this.clearDragAttribute();
+      };
+      btnDiv.addEventListener("dragstart", handleDragStart, false);
+      btnDiv.addEventListener("dragenter", handleDragEnter, false);
+      btnDiv.addEventListener("dragover", handleDragOver, false);
+      btnDiv.addEventListener("dragleave", handleDragLeave, false);
+      btnDiv.addEventListener("drop", handleDrop, false);
+      btnDiv.addEventListener("dragend", handleDragEnd, false);
     } else {
       alert("Please select which you like song.");
     }
+  }
+  clearDragAttribute() {
+    Array.prototype.forEach.call(selectorAll(".playlist .list>div"), data => {
+      data.removeAttribute("dragFrom");
+      data.removeAttribute("dragTo");
+    });
+  }
+  clearDragClass(cls) {
+    Array.prototype.forEach.call(selectorAll(".playlist .list>div"), data =>
+      data.classList.remove(cls)
+    );
+  }
+  getDragBtn(idx) {
+    return selectorAll(".playlist .list>div")[idx];
+  }
+  getDragIdx(attr) {
+    return Array.prototype.findIndex.call(
+      selectorAll(".playlist .list>div"),
+      data => {
+        return data.getAttribute(attr);
+      }
+    );
+  }
+  swapNodes(a, b) {
+    const aparent = a.parentNode;
+    const asibling = a.nextSibling === b ? a : a.nextSibling;
+    b.parentNode.insertBefore(a, b);
+    aparent.insertBefore(b, asibling);
   }
 
   getEl() {
@@ -517,58 +427,4 @@ class PlayList {
   }
 }
 
-class PlayArea {
-  constructor(AUDIOS, isDefault) {
-    this.playAreaDiv = createEl("div");
-    this.btnsDIV = createEl("div", ["buttons", "listbuttons"]);
-    if (isDefault) {
-      this.playAreaDiv.classList.add("default");
-      this.addListBTN = createEl("button");
-      this.addListBTN.innerHTML = "Add play list";
-      this.addListBTN.addEventListener("click", () => {
-        this.playList.addPlayList();
-      });
-    } else {
-      this.playAreaDiv.classList.add("default" + window.CURRENTIDX);
-    }
-    this.sortBTN = createEl("button");
-    this.sortBTN.innerHTML = "Sort";
-    this.sortBTN.addEventListener("click", () => {
-      this.playList.sort();
-    });
-    this.randomBTN = createEl("button");
-    this.randomBTN.innerHTML = "Random";
-    this.randomBTN.addEventListener("click", () => {
-      this.playList.random();
-    });
-    this.deleteBTN = createEl("button");
-    this.deleteBTN.innerHTML = "Delete";
-    this.deleteBTN.addEventListener("click", () => {
-      this.playList.delete();
-    });
-    if (isDefault) {
-      this.btnsDIV.append(this.addListBTN);
-    }
-    this.btnsDIV.append(this.sortBTN, this.randomBTN, this.deleteBTN);
-    this.playAreaDiv.appendChild(this.btnsDIV);
-
-    this.playList = new PlayList(AUDIOS);
-    // window.playList = this.playList;
-    this.playAreaDiv.appendChild(this.playList.getEl());
-    this.hide();
-  }
-
-  show() {
-    this.playAreaDiv.classList.remove("hide");
-  }
-
-  hide() {
-    this.playAreaDiv.classList.add("hide");
-  }
-
-  getEl() {
-    return this.playAreaDiv;
-  }
-}
-
-export default PlayArea;
+export default PlayList;

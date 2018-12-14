@@ -1,9 +1,9 @@
-import { selector } from "./method";
+import { selector, selectorAll } from "./method";
 import AUDIOS from "./data";
 import Title from "./class/title";
 import Bar from "./class/bar";
 import PlayButtons from "./class/playButtons";
-import PlayArea from "./class/playList";
+import PlayArea from "./class/playArea";
 
 AUDIOS.forEach(data => {
   Object.assign((data.length = Math.round(Math.random() * 6 * 10 + 10)), data);
@@ -119,7 +119,6 @@ window.loopAllPlayList = isDelete => {
     let msg = `Are you sure delete [${delSongName.join(", ")}]?`;
     if (containedListName.length) {
       containedListName = containedListName.map(data => {
-        console.log(data);
         return selector(".playlist ." + data).innerHTML;
       });
       msg += `\nPlay List: [${containedListName.join(
@@ -165,12 +164,12 @@ window.PLAYAREA["default"] = new PlayArea(AUDIOS, true);
 selector(".musiclist").appendChild(window.PLAYAREA.default.getEl());
 window.PLAYAREA.default.playList.random();
 window.PLAYAREA.default.show();
+selector(".container").style.display = "block";
 
 window.onkeyup = e => {
-  let key = e.which || e.keyCode;
-  console.log(key)
+  const key = e.which || e.keyCode;
   if (key === 32) {
-    document.querySelectorAll('.container>.buttons button')[1].click();
+    selectorAll(".container>.buttons button")[1].click();
   }
   if (key === 38) {
     window.PLAYAREA[window.CURRENTPLAYAREA].playList.prev();
@@ -179,4 +178,3 @@ window.onkeyup = e => {
     window.PLAYAREA[window.CURRENTPLAYAREA].playList.next();
   }
 };
-

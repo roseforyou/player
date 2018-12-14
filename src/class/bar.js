@@ -31,18 +31,14 @@ class Bar {
 
   play() {
     clearInterval(this.si);
-    this.si = setInterval(
-      () => {
-        if (this.length === 0) {
-          clearInterval(this.si);
-          // playlist next song
-          return;
-        }
-        this.length = this.length - 0.05;
-        this.formatLength();
-      },
-      50
-    );
+    this.si = setInterval(() => {
+      if (this.length === 0) {
+        clearInterval(this.si);
+        return;
+      }
+      this.length = this.length - 0.05;
+      this.formatLength();
+    }, 50);
   }
 
   pause() {

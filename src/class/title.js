@@ -8,7 +8,7 @@ class Title {
 
     this.span0 = createEl("span", ["img"]);
     this.img = createEl("img", ["icon"]);
-    this.img.setAttribute('src', 'assets/favicon.png');
+    this.img.setAttribute("src", "assets/favicon.png");
     this.span0.append(this.img);
     this.span1 = createEl("span", ["name"]);
     this.span1.innerHTML = "Welcome to play music!";
@@ -38,31 +38,28 @@ class Title {
   }
 
   play() {
-    this.span0.classList.add('animate');
+    this.span0.classList.add("animate");
     clearInterval(this.si);
-    this.si = setInterval(
-      () => {
-        if (this.length === 0) {
-          clearInterval(this.si);
-          this.length = this.initLen;
-          // playlist next song
-          window.PLAYAREA[window.CURRENTPLAYAREA].playList.next();
-          return;
-        }
-        this.length--;
-        this.setTime();
-      },
-      1000
-    );
+    this.si = setInterval(() => {
+      if (this.length === 0) {
+        clearInterval(this.si);
+        this.length = this.initLen;
+        // playlist next song
+        window.PLAYAREA[window.CURRENTPLAYAREA].playList.next();
+        return;
+      }
+      this.length--;
+      this.setTime();
+    }, 1000);
   }
 
   pause() {
     clearInterval(this.si);
-    this.span0.classList.remove('animate');
+    this.span0.classList.remove("animate");
   }
 
   stop() {
-    this.span0.classList.remove('animate');
+    this.span0.classList.remove("animate");
     clearInterval(this.si);
     this.length = this.initLen;
   }

@@ -16,7 +16,7 @@ class PlayButtons {
     this.playDiv = createEl("button");
     this.playDiv.innerHTML = "Play";
     this.playDiv.addEventListener("click", () => {
-      if (this.status==='playing') {
+      if (this.status === "playing") {
         window.PLAYAREA[window.CURRENTPLAYAREA].playList.pause();
       } else {
         window.PLAYAREA[window.CURRENTPLAYAREA].playList.play();

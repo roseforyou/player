@@ -325,14 +325,29 @@ class PlayList {
 
       input.addEventListener("blur", () => {
         span.classList.add("hide");
+        input.value = "";
       });
 
       input.addEventListener("keypress", e => {
         let key = e.which || e.keyCode;
         if (key === 13) {
-          newBtn.innerHTML = input.value.trim();
-          input.blur();
-          input.value = "";
+          let isHasSameName = false;
+          Array.prototype.find.call(
+            selectorAll(".playlist .list button"),
+            data => {
+              if (data.innerHTML === input.value.trim()) {
+                isHasSameName = true;
+              }
+            }
+          );
+          if (isHasSameName) {
+            alert("There is a same name play list!");
+            input.value = "";
+          } else {
+            newBtn.innerHTML = input.value.trim();
+            input.blur();
+            input.value = "";
+          }
         }
       });
 

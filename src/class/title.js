@@ -8,7 +8,7 @@ class Title {
 
     this.span0 = createEl("span", ["img"]);
     this.img = createEl("img", ["icon"]);
-    this.img.setAttribute("src", "assets/favicon.png");
+    this.img.setAttribute("src", "favicon.png");
     this.span0.append(this.img);
     this.span1 = createEl("span", ["name"]);
     this.span1.innerHTML = "Welcome to play music!";

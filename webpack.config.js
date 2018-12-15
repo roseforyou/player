@@ -27,6 +27,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Music Player',
       meta: { viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no' },
+      favicon: 'favicon.png',
       template: 'assets/main.html',
       inject: 'body',
       filename: 'index.html'

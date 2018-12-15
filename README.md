@@ -1,6 +1,6 @@
 # Analog Music Player
 
-## structure
+## Structure
 ```
 ├── assets                     // static resource
 │   ├── favicon.png            // favicon
@@ -39,7 +39,7 @@
   [Space] play/pause song
 ```
 
-## shortcoming
+## Shortcoming
 
 ```
 When playing music, if the currently playing music is at the bottom, need to scroll to see it.
@@ -61,4 +61,4 @@ npm run build
 
 ## Browsers support
 
-[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)
